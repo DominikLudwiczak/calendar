@@ -5,6 +5,11 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+
+use App\User;
 
 class LoginController extends Controller
 {
@@ -36,5 +41,28 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+
+    public function APIlogin(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+        
+        if(Auth::attempt($credentials))
+        {
+            $user = User::whereEmail($credentials['email'])->first();
+            $token = Str::random(80);
+            $user->forceFill([
+                'api_token' => hash('sha256', $token),
+            ])->save();
+
+            return response()->json([
+                'api_token' => $token
+            ], 200);
+        }
+
+        return response()->json([
+            'error' => 'Niepoprawny login lub hasło!'
+        ], 401);
     }
 }
