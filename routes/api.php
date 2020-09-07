@@ -14,10 +14,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/login', 'Auth\LoginController@APIlogin');
+//User
+    Route::post('/login', 'Auth\LoginController@APIlogin');
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:api');
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    })->middleware('auth:api');
 
-Route::get('/tokenRefresh', 'Auth\ApiTokenController@update')->middleware('auth:api');
+    Route::get('/tokenRefresh', 'Auth\ApiTokenController@update')->middleware('auth:api');
+
+//Calendar
+    
